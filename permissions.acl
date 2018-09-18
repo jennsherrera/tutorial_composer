@@ -1,0 +1,81 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule EndidadLecturaPropia {
+  description: "Permite que una entidad leea su propio registro"
+  participant(p): "mx.gob.jalisco.licitaciones.Entidad"
+  operation: READ
+  resource(r): "mx.gob.jalisco.licitaciones.Entidad"
+  condition:(r.id == p.getIdentifier())
+  action: ALLOW
+}
+
+rule Endidad_Transaccion_CreaAgente {
+  description: "Permite que una entidad invoque la transaccion para crear agentes"
+  participant: "mx.gob.jalisco.licitaciones.Entidad"
+  operation: CREATE
+  resource: "mx.gob.jalisco.licitaciones.CreaAgente"
+  action: ALLOW
+}
+
+rule Endidad_LeeAgentes {
+  description: "Permite que una entidad lea sus propios agentes"
+  participant(p): "mx.gob.jalisco.licitaciones.Entidad"
+  operation: READ
+  resource(r): "mx.gob.jalisco.licitaciones.Agente"
+  condition:(r.entidad.id == p.getIdentifier())
+  action: ALLOW
+}
+
+rule Endidad_Registro_CreaAgente {
+  description: "Permite que una entidad invoque la transaccion para crear agentes"
+  participant(p): "mx.gob.jalisco.licitaciones.Entidad"
+  operation: CREATE
+  resource(r): "mx.gob.jalisco.licitaciones.Agente"
+  transaction(t): "mx.gob.jalisco.licitaciones.CreaAgente"
+  condition: (true)
+  action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule EntidadSystem {
+    description: "Permite acceso de lectura a los recursos de sistema para las entidades"
+    participant: "mx.gob.jalisco.licitaciones.Entidad"
+    operation: READ
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule Entidad_Create_Historian {
+    description: "Permite la creción de registros en el historian a las entidades"
+    participant: "mx.gob.jalisco.licitaciones.Entidad"
+    operation: CREATE
+    resource: "org.hyperledger.composer.system.HistorianRecord"
+    action: ALLOW
+}
